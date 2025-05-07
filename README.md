@@ -117,6 +117,18 @@ The test suite includes comprehensive tests for:
 - N+1 query prevention
 - Detailed provider information retrieval
 
+## Note
+- After running 
+
+```bash
+php artisan test
+``` 
+```bash
+run php artisan db:seed
+``` 
+- to insert the data again 
+
+
 ## Future Enhancements
 
 - Full-text search capabilities
