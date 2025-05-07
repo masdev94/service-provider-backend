@@ -51,19 +51,17 @@ A high-performance Laravel 11 backend application that powers a Service Provider
    DB_PASSWORD=
    ```
 
-5. Add Some .png / .jpg images in Storage/app/public/seed-logos
-
-6. Run the migrations and seed the database:
+5. Run the migrations and seed the database:
    ```bash
    php artisan migrate --seed
    ```
 
-7. Create a symbolic link for storage:
+6. Create a symbolic link for storage:
    ```bash
    php artisan storage:link
    ```
 
-8. Start the development server:
+7. Start the development server:
    ```bash
    php artisan serve
    ```
@@ -122,9 +120,10 @@ The test suite includes comprehensive tests for:
 
 ```bash
 php artisan test
-``` 
+```
+- run  
 ```bash
-run php artisan db:seed
+php artisan db:seed
 ``` 
 - to insert the data again 
 
