@@ -15,17 +15,28 @@ class ServiceProviderController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceProvider::with('category');
+        $query = ServiceProvider::query();
+
+
+        if ($request->has('category') || $request->has('category_id')) {
+            $query->with('category:id,name,slug');
+        }
 
 
         if ($request->has('category')) {
             $query->whereHas('category', function ($q) use ($request) {
-                $q->where('slug', $request->category);
+                $q->where('name', $request->category);
             });
         }
 
+
+        if ($request->has('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+
         return $query->select(['id', 'name', 'slug', 'short_description', 'logo', 'category_id'])
-            ->paginate(12);
+            ->paginate($request->input('per_page', 12));
     }
 
     public function show(ServiceProvider $provider)
