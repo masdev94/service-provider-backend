@@ -27,15 +27,49 @@ class ServiceProviderController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        return $query->select(['id', 'name', 'slug', 'short_description', 'logo', 'category_id'])
+        $providers = $query->select(['id', 'name', 'slug', 'short_description', 'logo', 'category_id'])
             ->with('category:id,name,slug')
             ->paginate($request->input('per_page', 12));
+
+        if ($providers->isEmpty()) {
+            return response()->json([
+                'message' => 'No service providers found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Service providers retrieved successfully.',
+            'data' => $providers->items(),
+
+            'meta' => [
+                'current_page' => $providers->currentPage(),
+                'from' => $providers->firstItem(),
+                'last_page' => $providers->lastPage(),
+                'links' => $providers->linkCollection()->toArray(),
+                'path' => $providers->path(),
+                'per_page' => $providers->perPage(),
+                'to' => $providers->lastItem(),
+                'total' => $providers->total(),
+            ],
+        ], 200);
     }
 
 
     public function show(ServiceProvider $provider)
     {
-        return $provider->load('category');
+        $data = $provider->load('category');
+
+        if (!$data) {
+            return response()->json([
+                'message' => 'No service provider found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Service provider retrieved successfully.',
+            'data' => $data,
+        ], 200);
     }
 
     /**

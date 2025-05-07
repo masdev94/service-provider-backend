@@ -21,9 +21,9 @@ class ServiceProviderControllerTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-            ->assertJsonCount(5, 'data')
             ->assertJsonStructure([
-                'current_page',
+                'status',
+                'message',
                 'data' => [
                     '*' => [
                         'id',
@@ -34,8 +34,22 @@ class ServiceProviderControllerTest extends TestCase
                         'category_id'
                     ]
                 ],
-                'total'
+                'meta' => [
+                    'current_page',
+                    'from',
+                    'last_page',
+                    'links',
+                    'path',
+                    'per_page',
+                    'to',
+                    'total'
+                ]
             ]);
+
+        $this->assertEquals(5, count($response->json('data')));
+        $this->assertEquals('success', $response->json('status'));
+        $this->assertEquals('Service providers retrieved successfully.', $response->json('message'));
+        $this->assertEquals(5, $response->json('meta.total'));
     }
 
     public function test_it_can_filter_providers_by_category_name()
@@ -81,8 +95,13 @@ class ServiceProviderControllerTest extends TestCase
         $response = $this->getJson("/api/providers?category=non-existent-category");
 
         // Assert
-        $response->assertStatus(200)
-            ->assertJsonCount(0, 'data');
+        $response->assertStatus(404)
+            ->assertJsonStructure([
+                'message'
+            ])
+            ->assertJson([
+                'message' => 'No service providers found.'
+            ]);
     }
 
     public function test_it_loads_category_relation_when_filter_is_applied()
@@ -111,8 +130,30 @@ class ServiceProviderControllerTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-            ->assertJsonCount(5, 'data')
-            ->assertJsonPath('per_page', 5);
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data',
+                'meta' => [
+                    'current_page',
+                    'from',
+                    'last_page',
+                    'links',
+                    'path',
+                    'per_page',
+                    'to',
+                    'total'
+                ]
+            ])
+            ->assertJson([
+                'status' => 'success',
+                'message' => 'Service providers retrieved successfully.'
+            ]);
+
+        $this->assertEquals(5, count($response->json('data')));
+        $this->assertEquals(5, $response->json('meta.per_page'));
+        $this->assertEquals(20, $response->json('meta.total'));
+        $this->assertEquals(4, $response->json('meta.last_page'));
     }
 
     public function test_it_can_show_a_provider_detail_by_slug()
@@ -127,11 +168,34 @@ class ServiceProviderControllerTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'id',
+                    'name',
+                    'slug',
+                    'short_description',
+                    'logo',
+                    'category_id',
+                    'category' => [
+                        'id',
+                        'name',
+                        'slug'
+                    ]
+                ]
+            ])
             ->assertJson([
-                'id' => $provider->id,
-                'name' => $provider->name,
-                'slug' => $provider->slug,
+                'status' => 'success',
+                'message' => 'Service provider retrieved successfully.',
+                'data' => [
+                    'id' => $provider->id,
+                    'name' => $provider->name,
+                    'slug' => $provider->slug
+                ]
             ]);
+
+        $this->assertEquals($provider->id, $response->json('data.id'));
     }
 
     public function test_provider_detail_includes_category_information()
@@ -148,8 +212,33 @@ class ServiceProviderControllerTest extends TestCase
 
         // Assert
         $response->assertStatus(200)
-            ->assertJsonPath('category.id', $category->id)
-            ->assertJsonPath('category.name', $category->name);
+            ->assertJsonStructure([
+                'status',
+                'message',
+                'data' => [
+                    'id',
+                    'name',
+                    'slug',
+                    'category' => [
+                        'id',
+                        'name',
+                        'slug'
+                    ]
+                ]
+            ])
+            ->assertJson([
+                'status' => 'success',
+                'message' => 'Service provider retrieved successfully.',
+                'data' => [
+                    'category' => [
+                        'id' => $category->id,
+                        'name' => $category->name
+                    ]
+                ]
+            ]);
+
+        $this->assertEquals($category->id, $response->json('data.category.id'));
+        $this->assertEquals($category->name, $response->json('data.category.name'));
     }
 
     public function test_it_returns_404_for_non_existent_provider_slug()
