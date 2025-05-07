@@ -1,6 +1,6 @@
 # Service Provider Directory
 
-A high-performance Laravel 11 backend application that powers a Service Provider Directory web module. This application allows users to browse and filter service providers by category and view detailed information about each provider.
+A high-performance Laravel 12 backend application that powers a Service Provider Directory web module. This application allows users to browse and filter service providers by category and view detailed information about each provider.
 
 ## Features
 
@@ -11,7 +11,7 @@ A high-performance Laravel 11 backend application that powers a Service Provider
 
 ## Tech Stack
 
-- **Backend**: Laravel 11 with Eloquent ORM
+- **Backend**: Laravel 12 with Eloquent ORM
 - **Testing**: PHPUnit
 - **Database**: MySQL/SQLite (configurable)
 
@@ -26,7 +26,7 @@ A high-performance Laravel 11 backend application that powers a Service Provider
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/service-provider-be.git
+   git clone https://github.com/hamzaali4943/service-provider-be.git
    cd service-provider-be
    ```
 
