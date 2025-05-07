@@ -26,7 +26,7 @@ A high-performance Laravel 12 backend application that powers a Service Provider
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/hamzaali4943/service-provider-be.git
+   git clone https://github.com/masdev94/service-provider-backend.git
    cd service-provider-be
    ```
 
